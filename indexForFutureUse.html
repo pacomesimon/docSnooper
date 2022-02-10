@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	
+
+
+	<title>buns, Hello Coursera!</title>
+
+</head>
+<body>
+<h1>buns, Hello Coursera!</h1>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.7.1/themes/dark_turquoise.min.js"></script>
+<script>
+	    // Path to PDF file
+	    
+	    var PDF_URL = './example.pdf';
+	    // var PDF_URL = 'https://www.nerldc.in/wp-content/uploads/ISO_14001_2015_EMS.pdf';
+	    // Specify the path to the worker
+	    PDFJS.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.worker.min.js';
+
+	    PDFJS.getDocument(PDF_URL).then(function (pdf) {
+            var pdfDocument = pdf;
+            var pagesPromises = [" "];
+
+            for (var i = 1; i <= pdf.numPages; i++) {
+                // Required to prevent that i is always the total of pages
+                (function (pageNumber) {
+                    pagesPromises.push(getPageText(pageNumber, pdfDocument));
+                })(i);
+            }
+
+            Promise.all(pagesPromises).then(function (pagesText) {
+
+                // Display text of all the pages in the console
+                console.log(pagesText);
+                		console.log(pagesText[10]);
+                		console.log(pagesText[70]);
+						console.log(pagesText[71]);
+						console.log(pagesText[72]);
+                		console.log("something is here");
+						console.log(pagesText[73]);
+						console.log(pagesText[74]);
+						console.log(pagesText[75]);
+					
+				var totalPages = pagesText.length - 1 ; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+					var miQuerryString = "mobile doppler frequency";
+					var miQstrNormalized = miQuerryString.toLocaleLowerCase();
+					var miQstrArr = miQstrNormalized.split(" ");
+
+					var pagesFrequencies = [];
+
+					for (let r = 1; r <= totalPages ; r++) {
+						var pageFreq = 0;
+						for (q in miQstrArr){
+							pageFreq = pageFreq + getIndicesOf(miQstrArr[q], pagesText[r]);
+						}
+						pagesFrequencies[r] = pageFreq;
+						
+					}					
+
+					var dataToPlot = [[]];
+
+					for (let i = 1; i <= totalPages ; i++) {
+						var p = i-1;
+						dataToPlot[p] = [i,pagesFrequencies[i]]
+						// dataToPlot[0][0] = i;
+						// dataToPlot[p][1] = pagesFrequencies[i];
+					}
+
+					anychart.onDocumentReady(function() {
+
+					// create the data
+					var data = {
+						header: ["Page Number", "Occurences of Keywords"],
+						rows: dataToPlot
+					};
+
+					// create the chart
+					var chart = anychart.column();
+
+					// set the theme
+					anychart.theme(anychart.themes.darkTurquoise);
+
+					// add the data
+					chart.data(data);
+
+					// set the chart title
+					chart.title("Occurences Vs Page number for the Querry keywords: '" + miQuerryString +"'");
+
+					// add tick intervals
+					chart.yScale().ticks().interval(5);
+					chart.yScale().minorTicks().interval(1);
+					// add grid lines
+					chart.yGrid().enabled(true);
+					chart.yMinorGrid().enabled(true);
+
+					// turn on the chart animation
+					chart.animation(true);
+
+					// set the container
+					chart.container("container");
+
+					// draw the chart
+					chart.draw();
+					var cleanHands = document.getElementsByClassName("anychart-credits");
+					cleanHands[0].innerHTML = " ";
+
+					});
+					
+					
+				// 	var freqToShow = "<br>";
+				// 	for (let i = 1; i <= totalPages ; i++) {
+				// 		freqToShow = freqToShow + "<h1> page " + i +", </h1>" + pagesFrequencies[i] + "<br>";
+				// 		document.getElementById('freqdemo').innerHTML = freqToShow ;
+				// 	}
+
+
+
+				
+				// var textToShow = "<br>";
+				// for (let i = 1; i <= totalPages ; i++) {
+				// 	textToShow = textToShow + "<h1> page " + i +"</h1> <br>" + pagesText[i] + "<br> ===================== <br>";
+				// 	document.getElementById('demo').innerHTML = textToShow ;
+				// }
+
+
+
+            });
+
+        }, function (reason) {
+            // PDF loading error
+            console.error(reason);
+        });
+
+
+        /**
+         * Retrieves the text of a specif page within a PDF Document obtained through pdf.js 
+         * 
+         * @param {Integer} pageNum Specifies the number of the page 
+         * @param {PDFDocument} PDFDocumentInstance The PDF document obtained 
+         **/
+        function getPageText(pageNum, PDFDocumentInstance) {
+            // Return a Promise that is solved once the text of the page is retrieven
+            return new Promise(function (resolve, reject) {
+                PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+                    // The main trick to obtain the text of the PDF page, use the getTextContent method
+                    pdfPage.getTextContent().then(function (textContent) {
+                        var textItems = textContent.items;
+                        var finalString = "";
+
+                        // Concatenate the string of the item to the final string
+                        for (var i = 0; i < textItems.length; i++) {
+                            var item = textItems[i];
+
+                            finalString += item.str + " ";
+                        }
+
+                        // Solve promise with the text retrieven from the page
+                        resolve(finalString);
+                    });
+                });
+            });
+        }
+
+		function getIndicesOf(searchStr, str, caseSensitive) {
+			var searchStrLen = searchStr.length;
+			if (searchStrLen == 0) {
+				return [];
+			}
+			var startIndex = 0, index, indices = [];
+			if (!caseSensitive) {
+				str = str.toLowerCase();
+				searchStr = searchStr.toLowerCase();
+			}
+			while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+				indices.push(index);
+				startIndex = index + searchStrLen;
+			}
+			// return indices;
+			return indices.length;
+		}
+
+		// /**
+		//  * Retrieves the text of a specif page within a PDF Document obtained through pdf.js 
+		//  * 
+		//  * @param {Integer} pageNum Specifies the number of the page 
+		//  * @param {PDFDocument} PDFDocumentInstance The PDF document obtained 
+		//  **/
+		// function getPageText(pageNum, PDFDocumentInstance) {
+		//     // Return a Promise that is solved once the text of the page is retrieven
+		//     return new Promise(function (resolve, reject) {
+		//         PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+		//             // The main trick to obtain the text of the PDF page, use the getTextContent method
+		//             pdfPage.getTextContent().then(function (textContent) {
+		//                 var textItems = textContent.items;
+		//                 var finalString = "";
+
+		//                 // Concatenate the string of the item to the final string
+		//                 for (var i = 0; i < textItems.length; i++) {
+		//                     var item = textItems[i];
+
+		//                     finalString += item.str + " ";
+		//                 }
+
+		//                 // Solve promise with the text retrieven from the page
+		//                 resolve(finalString);
+		//             });
+		//         });
+		//     });
+		// }
+
+		// window.pageTexts = [];
+		// function pushToTheGlobal(pageNumber, textPage) {
+		// 	window.pageTexts[pageNumber] = textPage;
+		// 	console.log(window.pageTexts[pageNumber]);
+		// }
+
+		
+		// 			// var PDF_URL  = '/path/to/example.pdf';
+
+		// 	PDFJS.getDocument(PDF_URL).then(function (PDFDocumentInstance) {
+			    
+		// 	    var totalPages = PDFDocumentInstance.numPages;
+		// 	    var pageNumber = 1;
+
+		// 	    for (pageNumber = 1; pageNumber <= totalPages; pageNumber++) { 
+		// 	    // Extract the text
+		// 	    	// window.textNeeded = "";
+		// 		    getPageText(pageNumber , PDFDocumentInstance).then(function(textPage){
+		// 		        // Show the text of the page in the console
+		// 		        // console.log(textPage);
+		// 		        pushToTheGlobal(pageNumber,textPage);
+		// 		    });
+				    
+		// 		}
+		// 		console.log(window.pageTexts);
+		// 		console.log("something is here");
+		// 		console.log(window.pageTexts[73]);
+		// 		console.log(window.pageTexts[74]);
+		// 		console.log(window.pageTexts[75]);
+		// 	}, function (reason) {
+		// 	    // PDF loading error
+		// 	    console.error(reason);
+		// 	});
+
+
+		
+		//////////////////////document.getElementById('demo').innerHTML = "mi Array" + pageTexts;
+		// var totalPages = pageTexts.length - 1 ;
+		// var textToShow = "<br>";
+		// for (let i = 1; i <= totalPages ; i++) {
+		// 	textToShow = textToShow + "<h1> page " + i +"</h1> <br>" + pageTexts[i] + "<br> ===================== <br>";
+		// 	document.getElementById('demo').innerHTML = textToShow ;
+		// }
+
+	</script>
+	<div id="container" style="width: 100%; height: 500px;"></div>
+	<!-- <p id="freqdemo"></p>
+	<p id="demo"></p> -->
+	
+</body>
+</html>

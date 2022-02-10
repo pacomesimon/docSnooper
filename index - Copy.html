@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>DocSnooper Search Engine</title>
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet">
+        <!-- Fonts CSS-->
+        <link rel="stylesheet" href="css/heading.css">
+        <link rel="stylesheet" href="css/body.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.7.1/js/anychart-base.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/8.7.1/themes/dark_turquoise.min.js"></script>
+<script>
+	    // Path to PDF file
+	    function mainJob() {
+            document.getElementById('showdata').data = "";
+            document.getElementById('showsrc').src = "";
+            document.getElementById('container').innerHTML = "<h2>Processing your Querry <br> Wait a bit ...<h2>";
+            // var PDF_URL = './example.pdf';
+            var PDF_URL = document.getElementById('booboo').value;
+            var PDFloco = document.getElementById('booboo').value;
+	    // var PDF_URL = 'https://www.nerldc.in/wp-content/uploads/ISO_14001_2015_EMS.pdf';
+	    // Specify the path to the worker
+	    PDFJS.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.worker.min.js';
+
+	    PDFJS.getDocument(PDF_URL).then(function (pdf) {
+            var pdfDocument = pdf;
+            var pagesPromises = [" "];
+
+            for (var i = 1; i <= pdf.numPages; i++) {
+                // Required to prevent that i is always the total of pages
+                (function (pageNumber) {
+                    pagesPromises.push(getPageText(pageNumber, pdfDocument));
+                })(i);
+            }
+
+            Promise.all(pagesPromises).then(function (pagesText) {
+
+                // Display text of all the pages in the console
+                console.log(pagesText);
+                		console.log(pagesText[10]);
+                		console.log(pagesText[70]);
+						console.log(pagesText[71]);
+						console.log(pagesText[72]);
+                		console.log("something is here");
+						console.log(pagesText[73]);
+						console.log(pagesText[74]);
+						console.log(pagesText[75]);
+					
+				var totalPages = pagesText.length - 1 ; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+					var miQuerryString = document.getElementById('quiqui').value;
+					var miQstrNormalized = miQuerryString.toLocaleLowerCase();
+					var miQstrArr = miQstrNormalized.split(" ");
+
+					var pagesFrequencies = [];
+
+					for (let r = 1; r <= totalPages ; r++) {
+						var pageFreq = 0;
+						for (q in miQstrArr){
+							pageFreq = pageFreq + getIndicesOf(miQstrArr[q], pagesText[r]);
+						}
+						pagesFrequencies[r] = pageFreq;
+						
+					}					
+
+					var dataToPlot = [[]];
+
+					for (let i = 1; i <= totalPages ; i++) {
+						var p = i-1;
+						dataToPlot[p] = [i,pagesFrequencies[i]]
+						// dataToPlot[0][0] = i;
+						// dataToPlot[p][1] = pagesFrequencies[i];
+					}
+
+					anychart.onDocumentReady(function() {
+
+					// create the data
+					var data = {
+						header: ["Page Number", "Occurences of Keywords"],
+						rows: dataToPlot
+					};
+
+					// create the chart
+					var chart = anychart.column();
+
+					// set the theme
+					anychart.theme(anychart.themes.darkTurquoise);
+
+					// add the data
+					chart.data(data);
+
+					// set the chart title
+					chart.title("Occurences (vertical axis) Vs Page number (horizontal axis) for the Querry keywords: '" + miQuerryString +"'");
+
+					// add tick intervals
+					chart.yScale().ticks().interval(5);
+					chart.yScale().minorTicks().interval(1);
+					// add grid lines
+					chart.yGrid().enabled(true);
+					chart.yMinorGrid().enabled(true);
+
+					// turn on the chart animation
+					chart.animation(true);
+
+					// set the container
+                    document.getElementById('container').innerHTML = " ";
+					chart.container("container");
+
+					// draw the chart
+					chart.draw();
+					var cleanHands = document.getElementsByClassName("anychart-credits");
+					cleanHands[0].innerHTML = " ";
+                    
+                    document.getElementById('titlepdf').innerHTML = "See ... The PDF document is loaded below here: ";
+                    document.getElementById('showdata').data = PDFloco;
+                    document.getElementById('showsrc').src = PDFloco;
+					});
+					
+					
+				// 	var freqToShow = "<br>";
+				// 	for (let i = 1; i <= totalPages ; i++) {
+				// 		freqToShow = freqToShow + "<h1> page " + i +", </h1>" + pagesFrequencies[i] + "<br>";
+				// 		document.getElementById('freqdemo').innerHTML = freqToShow ;
+				// 	}
+
+
+
+				
+				// var textToShow = "<br>";
+				// for (let i = 1; i <= totalPages ; i++) {
+				// 	textToShow = textToShow + "<h1> page " + i +"</h1> <br>" + pagesText[i] + "<br> ===================== <br>";
+				// 	document.getElementById('demo').innerHTML = textToShow ;
+				// }
+
+
+
+            });
+
+        }, function (reason) {
+            // PDF loading error
+            console.error(reason);
+        });
+
+
+        }
+	    
+        /**
+         * Retrieves the text of a specif page within a PDF Document obtained through pdf.js 
+         * 
+         * @param {Integer} pageNum Specifies the number of the page 
+         * @param {PDFDocument} PDFDocumentInstance The PDF document obtained 
+         **/
+        function getPageText(pageNum, PDFDocumentInstance) {
+            // Return a Promise that is solved once the text of the page is retrieven
+            return new Promise(function (resolve, reject) {
+                PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+                    // The main trick to obtain the text of the PDF page, use the getTextContent method
+                    pdfPage.getTextContent().then(function (textContent) {
+                        var textItems = textContent.items;
+                        var finalString = "";
+
+                        // Concatenate the string of the item to the final string
+                        for (var i = 0; i < textItems.length; i++) {
+                            var item = textItems[i];
+
+                            finalString += item.str + " ";
+                        }
+
+                        // Solve promise with the text retrieven from the page
+                        resolve(finalString);
+                    });
+                });
+            });
+        }
+
+		function getIndicesOf(searchStr, str, caseSensitive) {
+			var searchStrLen = searchStr.length;
+			if (searchStrLen == 0) {
+				return [];
+			}
+			var startIndex = 0, index, indices = [];
+			if (!caseSensitive) {
+				str = str.toLowerCase();
+				searchStr = searchStr.toLowerCase();
+			}
+			while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+				indices.push(index);
+				startIndex = index + searchStrLen;
+			}
+			// return indices;
+			return indices.length;
+		}
+
+	
+
+	</script>
+
+    </head>
+    <body id="page-top" style="padding: 0px 0px 0px 0px; background-color: #bcbcbe" >
+        <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav" style="padding: 0px 0px 0px; background-color: #0b1020">
+            <div class="container" ><a class="navbar-brand js-scroll-trigger" href="./index.html#page-top">© DocSnooper 2021</a>
+                
+            </div>
+        </nav>
+        <header class="text-white"  style="padding: 65px 0px 0px; background-color: #0f162b">
+            <div class="container d-flex flex-column">
+                <div class="form-group row justify-content-center">
+                    <div class="col-6 col-md-3">
+                        <select class="form-control" id="booboo">
+                            <!-- <option>Select a Book</option> -->
+                            <option value="./proof2.pdf">Selected book: History Book</option>
+                            <option value="./example.pdf">A Mobile Telecommunication Lecture Book</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        
+                        <input type="text" class="form-control" id="quiqui" name="telnum"
+                            placeholder="Enter keywords here ... , for e.g: Kingdom Prince ">
+                        
+                    </div>
+                    <div class="col-5 col-md-1">
+                        <a role="button" class="btn btn-primary" href="#" onclick="mainJob();">Search</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+            <div class="col-12" >
+                
+                <div >
+                    <form>
+                        
+                        <div class="row align-items-center" style="padding-top: 1px;">
+                            
+                            <div class="col-12" id="container" style="width: 100%; height: 420px;">
+                                <img src="dummy.png">
+                            </div>
+
+                            <div class="col-12">
+                                <h3><a id="titlepdf"> ... </a><br></h3>
+                                <object
+                                    id="showdata"
+                                    data=""
+                                    type="application/pdf"
+                                    width="100%"
+                                    height="1000px"
+                                >
+                                    <iframe
+                                        id="showsrc"
+                                        src=""
+                                        width="100%"
+                                        height="1000px"
+                                        style="border: none;"
+                                    >
+                                        <p>
+                                            Your browser does not support PDFs.
+                                            <a href="https://example.com/test.pdf">Download the PDF</a>
+                                            .
+                                        </p>
+                                    </iframe>
+                                </object>
+                                
+                                <hr>
+                            </div>
+                            
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        
+        
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+        <script src="assets/mail/jqBootstrapValidation.js"></script>
+        <script src="assets/mail/contact_me.js"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
