@@ -32,6 +32,7 @@
             document.getElementById('showdata').data = "";
             document.getElementById('showsrc').src = "";
             document.getElementById('container').innerHTML = "<h2>Processing your Querry <br> Wait a bit ...<h2>";
+            document.getElementById('titlepdf').innerHTML = "..."
             // var PDF_URL = './example.pdf';
             var PDF_URL = document.getElementById('booboo').value;
             var PDFloco = document.getElementById('booboo').value;
@@ -129,7 +130,7 @@
 					var cleanHands = document.getElementsByClassName("anychart-credits");
 					cleanHands[0].innerHTML = " ";
                     
-                    document.getElementById('titlepdf').innerHTML = 'Click <a role="button" class="btn btn-primary" href="#" onclick="consolelog();">This Button</a> To Open The PDF Document in a New Window.';
+                    document.getElementById('titlepdf').innerHTML = 'Click <a role="button" class="btn btn-success" href="#" onclick="consolelog();"><h3><strong>This Button</strong></h3></a> To Open The PDF Document in a New Window.';
                     // document.getElementById('showdata').data = PDFloco;
                     // document.getElementById('showsrc').src = PDFloco;
 					});
@@ -254,7 +255,7 @@
                         
                         <div class="row align-items-center" style="padding-top: 1px;">
                             
-                            <div class="col-12" id="container" style="width: 100%; height: 420px;">
+                            <div class="col-12" id="container" style="width: 100%;">
                                 <img src="dummy.png">
                             </div>
 
@@ -265,13 +266,11 @@
                                     data=""
                                     type="application/pdf"
                                     width="100%"
-                                    height="1000px"
                                 >
                                     <iframe
                                         id="showsrc"
                                         src=""
                                         width="100%"
-                                        height="1000px"
                                         style="border: none;"
                                     >
                                         <p>
