@@ -37,6 +37,12 @@
             var PDF_URL = document.getElementById('booboo').value;
             var PDFloco = document.getElementById('booboo').value;
             globalPDF_URL = document.getElementById('booboo').value;
+
+            PDF_URL = PDF_URL.trim();
+            PDFloco = PDFloco.trim();
+            globalPDF_URL = globalPDF_URL.trim();
+
+
 	    // var PDF_URL = 'https://www.nerldc.in/wp-content/uploads/ISO_14001_2015_EMS.pdf';
 	    // Specify the path to the worker
 	    PDFJS.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.worker.min.js';
@@ -229,11 +235,12 @@
             <div class="container d-flex flex-column">
                 <div class="form-group row justify-content-center">
                     <div class="col-6 col-md-3">
-                        <select class="form-control" id="booboo">
-                            <!-- <option>Select a Book</option> -->
+                        <input type="text" class="form-control" id="booboo" name="tel"
+                            placeholder="Enter the filename here ... , for e.g: example.pdf ">
+                        <!-- <select class="form-control" id="booboo">
                             <option value="./proof2.pdf">Selected book: History Book</option>
                             <option value="example 1.pdf">A Mobile Telecommunication Lecture Book</option>
-                        </select>
+                        </select> -->
                     </div>
                     <div class="col-12 col-md-6">
                         
