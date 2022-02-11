@@ -18,13 +18,25 @@
         <script src="https://cdn.anychart.com/releases/8.7.1/themes/dark_turquoise.min.js"></script>
 <script>
 	    // Path to PDF file
-	    function mainJob() {
+        var globalPDF_URL = "";
+	    
+        function consolelog() {
+          window.myWindow = window.open(
+            globalPDF_URL,
+            'MsgWindow',
+            'top=50,left=500,width=600,height=600'
+          );
+        }
+
+        function mainJob() {
             document.getElementById('showdata').data = "";
             document.getElementById('showsrc').src = "";
             document.getElementById('container').innerHTML = "<h2>Processing your Querry <br> Wait a bit ...<h2>";
+            document.getElementById('titlepdf').innerHTML = "..."
             // var PDF_URL = './example.pdf';
             var PDF_URL = document.getElementById('booboo').value;
             var PDFloco = document.getElementById('booboo').value;
+            globalPDF_URL = document.getElementById('booboo').value;
 	    // var PDF_URL = 'https://www.nerldc.in/wp-content/uploads/ISO_14001_2015_EMS.pdf';
 	    // Specify the path to the worker
 	    PDFJS.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.worker.min.js';
@@ -118,9 +130,9 @@
 					var cleanHands = document.getElementsByClassName("anychart-credits");
 					cleanHands[0].innerHTML = " ";
                     
-                    document.getElementById('titlepdf').innerHTML = "See ... The PDF document is loaded below here: ";
-                    document.getElementById('showdata').data = PDFloco;
-                    document.getElementById('showsrc').src = PDFloco;
+                    document.getElementById('titlepdf').innerHTML = 'Click <a role="button" class="btn btn-success" href="#" onclick="consolelog();"><h3><strong>This Button</strong></h3></a> To Open The PDF Document in a New Window.';
+                    // document.getElementById('showdata').data = PDFloco;
+                    // document.getElementById('showsrc').src = PDFloco;
 					});
 					
 					
@@ -207,9 +219,9 @@
         <nav class="navbar navbar-expand-lg bg-secondary fixed-top" id="mainNav" style="padding: 0px 0px 0px; background-color: #0b1020">
             <div class="container" ><a class="navbar-brand js-scroll-trigger" href="./index.html#page-top">© DocSnooper 2021</a>
                 
-                <a class=" js-scroll-trigger" href="./index.html#page-top">About Us</a>
-                <a class=" js-scroll-trigger" href="./index.html#page-top">Contact Us</a>
-                <a class=" js-scroll-trigger" href="./index.html#page-top">Help</a>
+                <a class=" js-scroll-trigger" href="https://sites.google.com/view/docsnooper/history">About Us</a>
+                <a class=" js-scroll-trigger" href="https://sites.google.com/view/docsnooper/team">Contact Us</a>
+                <a class=" js-scroll-trigger" href="https://sites.google.com/view/docsnooper/faq">Help</a>
                 
             </div>
         </nav>
@@ -243,7 +255,7 @@
                         
                         <div class="row align-items-center" style="padding-top: 1px;">
                             
-                            <div class="col-12" id="container" style="width: 100%; height: 420px;">
+                            <div class="col-12" id="container" style="width: 100%;height: 420px;">
                                 <img src="dummy.png">
                             </div>
 
@@ -254,13 +266,11 @@
                                     data=""
                                     type="application/pdf"
                                     width="100%"
-                                    height="1000px"
                                 >
                                     <iframe
                                         id="showsrc"
                                         src=""
                                         width="100%"
-                                        height="1000px"
                                         style="border: none;"
                                     >
                                         <p>
