@@ -37,6 +37,12 @@
             var PDF_URL = document.getElementById('booboo').value;
             var PDFloco = document.getElementById('booboo').value;
             globalPDF_URL = document.getElementById('booboo').value;
+
+            PDF_URL = PDF_URL.trim();
+            PDFloco = PDFloco.trim();
+            globalPDF_URL = globalPDF_URL.trim();
+
+
 	    // var PDF_URL = 'https://www.nerldc.in/wp-content/uploads/ISO_14001_2015_EMS.pdf';
 	    // Specify the path to the worker
 	    PDFJS.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.246/pdf.worker.min.js';
@@ -228,23 +234,28 @@
         <header class="text-white"  style="padding: 65px 0px 0px; background-color: #0f162b">
             <div class="container d-flex flex-column">
                 <div class="form-group row justify-content-center">
-                    <div class="col-6 col-md-3">
-                        <select class="form-control" id="booboo">
-                            <!-- <option>Select a Book</option> -->
+                    <div class="col-xs-12 col-md-6">
+                        <input type="text" class="form-control" id="booboo" name="tel"
+                            placeholder="Enter the filename here ... , for e.g: example.pdf ">
+                        <!-- <select class="form-control" id="booboo">
                             <option value="./proof2.pdf">Selected book: History Book</option>
-                            <option value="./example.pdf">A Mobile Telecommunication Lecture Book</option>
-                        </select>
+                            <option value="example 1.pdf">A Mobile Telecommunication Lecture Book</option>
+                        </select> -->
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-xs-12 col-md-6">
                         
                         <input type="text" class="form-control" id="quiqui" name="telnum"
                             placeholder="Enter keywords here ... , for e.g: Kingdom Prince ">
                         
                     </div>
-                    <div class="col-5 col-md-1">
+                </div>
+
+                <div class="form-group row justify-content-center">
+                    <div class="col-12">
                         <a role="button" class="btn btn-primary" href="#" onclick="mainJob();">Search</a>
                     </div>
                 </div>
+
             </div>
         </header>
         
@@ -255,7 +266,7 @@
                         
                         <div class="row align-items-center" style="padding-top: 1px;">
                             
-                            <div class="col-12" id="container" style="width: 100%;height: 420px;">
+                            <div class="col-12" id="container" style="width: 100%;height: 350px;">
                                 <img src="dummy.png">
                             </div>
 
